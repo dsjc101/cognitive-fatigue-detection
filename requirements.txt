@@ -1,0 +1,8 @@
+streamlit==1.33.0
+pandas==2.2.2
+numpy==1.26.4
+matplotlib==3.8.4
+scikit-learn==1.4.2
+tensorflow==2.15.0
+pynput==1.7.6
+joblib==1.4.2
