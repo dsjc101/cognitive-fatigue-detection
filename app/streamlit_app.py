@@ -1,6 +1,4 @@
-import sys
-import streamlit as st
-st.write("🐍 Python version:", sys.version)
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -20,7 +18,9 @@ DATA_DIR = "data"
 LABEL_FILE = os.path.join(DATA_DIR, "session_labels.csv")
 GLOBAL_MODEL_PATH = "models/fatigue_lstm.h5"
 os.makedirs(DATA_DIR, exist_ok=True)
-
+import sys
+import streamlit as st
+st.write("🐍 Python version:", sys.version)
 keyboard_log = []
 mouse_log = []
 last_key_time = None
