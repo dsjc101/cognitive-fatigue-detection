@@ -1,0 +1,41 @@
+import pandas as pd
+import numpy as np
+import os
+
+user_id = "user1"
+base_session = 20
+num_relaxed = 3
+num_fatigue = 2
+output_dir = "data"  # adjust if needed
+os.makedirs(output_dir, exist_ok=True)
+
+def generate_session(session_id, fatigue_label, seed):
+    np.random.seed(seed)
+    n = np.random.randint(120, 200)
+    df = pd.DataFrame({
+        "timestamp": np.round(np.linspace(0, n, n), 2),
+        "key_hold_time": np.random.normal(0.08 if fatigue_label == 0 else 0.04, 0.01, n).clip(0.01, 0.2),
+        "inter_key_delay": np.random.normal(0.05 if fatigue_label == 0 else 0.1, 0.01, n).clip(0.01, 0.2),
+        "is_backspace": np.random.binomial(1, 0.05 if fatigue_label == 0 else 0.3, n),
+        "mouse_speed": np.random.normal(80 if fatigue_label == 0 else 300, 30 if fatigue_label == 0 else 100, n).clip(0, 1000),
+        "click_event": np.random.binomial(1, 0.1 if fatigue_label == 0 else 0.4, n),
+        "session_time_of_day_x": round(np.random.uniform(0.0, 1.0), 4),
+        "session_time_of_day_y": round(np.random.uniform(0.0, 1.0), 4),
+        "label": fatigue_label,
+        "user_id": user_id
+    })
+    file_name = f"session_{user_id}_s{session_id}.csv"
+    df.to_csv(os.path.join(output_dir, file_name), index=False)
+    return file_name, fatigue_label
+
+# Generate sessions and update labels
+labels = []
+for i in range(num_relaxed):
+    labels.append(generate_session(base_session + i, 0, seed=40+i))
+for i in range(num_fatigue):
+    labels.append(generate_session(base_session + num_relaxed + i, 1, seed=90+i))
+
+# Update label file
+labels_df = pd.DataFrame(labels, columns=["session_file", "fatigue"])
+labels_df.to_csv(os.path.join(output_dir, "new_session_labels.csv"), index=False)
+print("✅ Files created in:", output_dir)
